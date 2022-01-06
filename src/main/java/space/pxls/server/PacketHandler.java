@@ -239,14 +239,14 @@ public class PacketHandler {
                     App.putPixel(lastPixel.x, lastPixel.y, lastPixel.color, user, false, false, "user undo");
                     user.decreasePixelCounts();
                     broadcastPixelUpdate(lastPixel.x, lastPixel.y, lastPixel.color);
-                    ackUndo(user, lastPixel.x, lastPixel.y);
+                    ackUndo(user, lastPixel.x, lastPixel.y, lastPixel.color);
                 } else {
                     byte defaultColor = App.getDefaultColor(thisPixel.x, thisPixel.y);
                     App.getDatabase().putUserUndoPixel(thisPixel.x, thisPixel.y, defaultColor, user, thisPixel.id);
                     user.decreasePixelCounts();
                     App.putPixel(thisPixel.x, thisPixel.y, defaultColor, user, false, false, "user undo");
                     broadcastPixelUpdate(thisPixel.x, thisPixel.y, defaultColor);
-                    ackUndo(user, thisPixel.x, thisPixel.y);
+                    ackUndo(user, thisPixel.x, thisPixel.y, defaultColor);
                 }
                 sendAvailablePixels(user, "undo");
                 sendCooldownData(user);
@@ -317,7 +317,7 @@ public class PacketHandler {
                                 for (WebSocketChannel ch : user.getConnections()) {
                                     server.send(ch, msg);
                                 }
-                                ackPlace(user, cp.getX(), cp.getY());
+                                ackPlace(user, cp.getX(), cp.getY(), cp.getColor());
                                 if (user.canUndo(false)) {
                                     server.send(channel, new ServerCanUndo(App.getConfig().getDuration("undo.window", TimeUnit.SECONDS)));
                                 }
@@ -326,7 +326,7 @@ public class PacketHandler {
                                 App.putPixel(cp.getX(), cp.getY(), cp.getColor(), user, modAction, true, "");
                                 App.saveMap();
                                 broadcastPixelUpdate(cp.getX(), cp.getY(), cp.getColor());
-                                ackPlace(user, cp.getX(), cp.getY());
+                                ackPlace(user, cp.getX(), cp.getY(), cp.getColor());
                                 sendPixelCountUpdate(user);
                             }
                             if (!user.hasIgnoreCooldown()) {
@@ -574,17 +574,17 @@ public class PacketHandler {
         }
     }
 
-    private void ackUndo(User user, int x, int y) {
-        ack(user, "UNDO", x, y);
+    private void ackUndo(User user, int x, int y, int color) {
+        ack(user, "UNDO", x, y, color);
     }
 
-    private void ackPlace(User user, int x, int y) {
-        ack(user, "PLACE", x, y);
+    private void ackPlace(User user, int x, int y, int color) {
+        ack(user, "PLACE", x, y, color);
     }
 
-    private void ack(User user, String _for, int x, int y) {
+    private void ack(User user, String _for, int x, int y, int color) {
         for (WebSocketChannel ch : user.getConnections()) {
-            server.send(ch, new ServerACK(_for, x, y));
+            server.send(ch, new ServerACK(_for, x, y, color));
         }
     }
 

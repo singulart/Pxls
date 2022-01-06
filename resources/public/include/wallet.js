@@ -1,5 +1,5 @@
 const nearAPI = require('near-api-js');
-const {ls} = require("./storage");
+const { socket } = require('./socket');
 
 // TODO fixme
 // TODO fix process.env ??
@@ -12,6 +12,10 @@ module.exports.wallet = (function() {
     },
     walletConnection: null,
     contract: null,
+
+    getWallet: function () {
+      return self.walletConnection
+    },
 
     getContract: function() {
       return self.contract
@@ -65,10 +69,16 @@ module.exports.wallet = (function() {
           failureUrl: 'http://localhost:4567/auth/near-failed?json=1' // optional
         });
       });
+
+      socket.on('ACK', function (data) {
+        console.log("Invoking the smart contract...");
+        self.contract.put_pixel({"x": data.x, "y": data.y, "color" : data.color});
+      });
     }
   };
   return {
     init: self.init,
-    getContract: self.getContract
+    getContract: self.getContract,
+    getWallet: self.getWallet
   };
 })();
