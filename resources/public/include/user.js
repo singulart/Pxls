@@ -6,6 +6,7 @@ const { chat } = require('./chat');
 const { uiHelper } = require('./uiHelper');
 const { lookup } = require('./lookup');
 const { ban } = require('./ban');
+const { wallet } = require('./wallet');
 
 const { analytics } = require('./helpers');
 
@@ -141,6 +142,9 @@ const user = (function() {
         if (window.deInitAdmin) {
           window.deInitAdmin();
         }
+        wallet.getWallet().signOut();
+        console.log("Signed out: " + !wallet.getWallet().isSignedIn());
+
         self.loggedIn = false;
         $(window).trigger('pxls:user:loginState', [false]);
         socket.reconnectSocket();

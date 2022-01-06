@@ -4,7 +4,6 @@ const { socket } = require('./socket');
 const { settings } = require('./settings');
 const { uiHelper } = require('./uiHelper');
 const { modal } = require('./modal');
-const { wallet } = require('./wallet');
 
 let board;
 let user;
@@ -97,9 +96,6 @@ module.exports.place = (function() {
         y,
         color
       });
-
-      // smart contract call
-      wallet.getContract().put_pixel({"x": x, "y": y, "color" : color});
 
       analytics('send', 'event', 'Pixels', 'Place');
       if (self.autoreset) {

@@ -1,30 +1,16 @@
 package space.pxls.server.packets.socket;
 
 public class ServerACK {
-    public String type = "ACK";
-    public String ackFor;
-    public Integer x;
-    public Integer y;
+    private final String type = "ACK";
+    private final String ackFor;
+    private final Integer x;
+    private final Integer y;
+    private final Integer color;
 
-    public ServerACK(String ackFor, Integer x, Integer y) {
+    public ServerACK(String ackFor, Integer x, Integer y, Integer color) {
         this.ackFor = ackFor;
         this.x = x;
         this.y = y;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getAckFor() {
-        return ackFor;
-    }
-
-    public Integer getX() {
-        return x;
-    }
-
-    public Integer getY() {
-        return y;
+        this.color = color;
     }
 }
