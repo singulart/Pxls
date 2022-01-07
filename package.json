@@ -1,6 +1,9 @@
 {
   "name": "pxls",
   "version": "1.0.0",
+  "engines": {
+    "node": "16.x"
+  },
   "private": true,
   "dependencies": {
     "@babel/core": "^7.14.6",
@@ -30,8 +33,5 @@
   "devDependencies": {
     "gulp-rename": "^2.0.0",
     "through2": "^2.0.5"
-  },
-  "engines": {
-    "node": "16.x"
   }
 }
