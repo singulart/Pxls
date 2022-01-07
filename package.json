@@ -32,6 +32,6 @@
     "through2": "^2.0.5"
   },
   "engines": {
-    "node": "17.x"
+    "node": "16.x"
   }
 }
