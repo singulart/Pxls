@@ -30,5 +30,8 @@
   "devDependencies": {
     "gulp-rename": "^2.0.0",
     "through2": "^2.0.5"
+  },
+  "engines": {
+    "node": "17.x"
   }
 }
