@@ -37,9 +37,9 @@ public class Database {
         }
 
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl(App.getConfig().getString("database.url"));
-        config.setUsername(App.getConfig().getString("database.user"));
-        config.setPassword(App.getConfig().getString("database.pass"));
+        config.setJdbcUrl(System.getProperty("database.url"));
+        config.setUsername(System.getProperty("database.user"));
+        config.setPassword(System.getProperty("database.pass"));
         config.addDataSourceProperty("cachePrepStmts", "true");
         config.addDataSourceProperty("prepStmtCacheSize", "250");
         config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");

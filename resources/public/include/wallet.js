@@ -17,14 +17,10 @@ module.exports.wallet = (function() {
       return self.walletConnection
     },
 
-    getContract: function() {
-      return self.contract
-    },
-
     init() {
 
       self.elems.connectWalletButton = document.querySelector('#connect_wallet');
-      console.log(self.elems.connectWalletButton)
+
       // create a keyStore for signing transactions using the user's key
       // which is located in the browser local storage after user logs in
       const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();
@@ -41,6 +37,15 @@ module.exports.wallet = (function() {
         const walletConnection = new nearAPI.WalletConnection(near);
         console.log(walletConnection.isSignedIn());
         self.walletConnection = walletConnection;
+
+        if(self.walletConnection.isSignedIn()) {
+          $('#connect_wallet').fadeOut(200);
+          $('#wallet_account').text(self.walletConnection.getAccountId());
+        } else {
+          $('#connect_wallet').fadeIn(200);
+          $('#wallet_account').fadeOut(200);
+        }
+
 
         self.contract = new nearAPI.Contract(
             // User's accountId as a string
@@ -78,7 +83,6 @@ module.exports.wallet = (function() {
   };
   return {
     init: self.init,
-    getContract: self.getContract,
     getWallet: self.getWallet
   };
 })();

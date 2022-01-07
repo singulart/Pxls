@@ -43,6 +43,7 @@
     </div>
     <div class="mid"></div>
     <div class="right">
+        <label id="wallet_account"></label>
         <button type="button" id="connect_wallet">
             <img src="../near.png" width="40px" height="40px" alt="Connect NEAR Wallet"/>
         </button>
@@ -114,7 +115,6 @@
         <div id="ui-bottom">
             <button type="button" id="undo"><span>{{i18n('Localization', 'Undo') | raw}}</span></button>
             <div id="login-overlay" class="palette-overlay">
-                {{i18n('Localization', 'You are not signed in.&nbsp;<a href="#">Sign in with...</a>') | raw}}
             </div>
             <div id="user-message" class="palette-overlay"></div>
             <div id="palette"></div>
@@ -761,7 +761,7 @@
         {# FAQ panel #}
         <h3><i class="fas fa-question-circle fa-is-left"></i>{{i18n('Localization', 'Help') | raw}}</h3>
         <div class="right">
-            <button type="button" clasfs="panel-closer" title="{{i18n('Localization', 'Close Panel') | raw}}"><i class="fas fa-times"></i></button>
+            <button type="button" class="panel-closer" title="{{i18n('Localization', 'Close Panel') | raw}}"><i class="fas fa-times"></i></button>
         </div>
     </header>
     <div class="panel-body">

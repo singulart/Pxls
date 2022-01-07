@@ -144,6 +144,8 @@ const user = (function() {
         }
         wallet.getWallet().signOut();
         console.log("Signed out: " + !wallet.getWallet().isSignedIn());
+        $('#connect_wallet').fadeIn(200);
+        $('#wallet_account').fadeOut(200);
 
         self.loggedIn = false;
         $(window).trigger('pxls:user:loginState', [false]);
