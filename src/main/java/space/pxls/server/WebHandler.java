@@ -53,7 +53,6 @@ public class WebHandler {
     private static final Logger appLogger = LogManager.getLogger("App");
 
     public WebHandler() {
-        addServiceIfAvailable("near", new NearAuthService("near"));
         addServiceIfAvailable("reddit", new RedditAuthService("reddit"));
         addServiceIfAvailable("google", new GoogleAuthService("google"));
         addServiceIfAvailable("discord", new DiscordAuthService("discord"));

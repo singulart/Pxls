@@ -8,6 +8,8 @@ import com.typesafe.config.ConfigList;
 import com.typesafe.config.ConfigValue;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -952,7 +954,7 @@ public class App {
     }
 
     private static void loadConfig() {
-        config = ConfigFactory.parseFile(new File("pxls.conf")).withFallback(ConfigFactory.load());
+        config = ConfigFactory.parseResources(ClassLoader.getSystemClassLoader(), "reference.conf").withFallback(ConfigFactory.load());
         config.checkValid(ConfigFactory.load());
 
         RateLimitFactory.registerBucketHolder(ClientUndo.class, new RateLimitFactory.BucketConfig(((int) App.getConfig().getDuration("server.limits.undo.time", TimeUnit.SECONDS)), App.getConfig().getInt("server.limits.undo.count")));
@@ -982,8 +984,7 @@ public class App {
     private static void loadRoles() {
         // NOTE: This differs from the way pxls.conf is handled, as we don't merge the roles-reference.conf
         // file into roles.conf, but use it as a default in case roles.conf doesn't exist or is invalid.
-        var roleConfigFile = new File("roles.conf");
-        var roleConfig = ConfigFactory.parseFile(roleConfigFile.exists() ? roleConfigFile : new File("resources/roles-reference.conf"));
+        var roleConfig = ConfigFactory.parseResources(ClassLoader.getSystemClassLoader(), "roles-reference.conf");
 
         HashMap<Role, List<String>> inheritanceMap = new HashMap<>();
         for (var id : roleConfig.root().keySet()) {
@@ -1024,8 +1025,7 @@ public class App {
     public static void loadPalette() {
         // NOTE: This differs from the way pxls.conf is handled, as we don't merge the palette-reference.conf
         // file into roles.conf, but use it as a default in case palette.conf doesn't exist or is invalid.
-        var paletteConfigFile = new File("palette.conf");
-        var paletteConfig = ConfigFactory.parseFile(paletteConfigFile.exists() ? paletteConfigFile : new File("resources/palette-reference.conf"));
+        var paletteConfig = ConfigFactory.parseResources(ClassLoader.getSystemClassLoader(), "palette-reference.conf");
 
         ArrayList<Color> colors = new ArrayList<>();
         int defaultIdx = -1;
