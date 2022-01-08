@@ -1586,7 +1586,7 @@ public class WebHandler {
         } else if (name.isEmpty()) {
             respond(exchange, StatusCodes.BAD_REQUEST, new space.pxls.server.packets.http.Error("bad_username", "Username may not be empty"));
             return;
-        } else if (!name.matches("[a-zA-Z0-9_\\-]+")) {
+        } else if (!name.matches("[a-zA-Z0-9\\.\\-]+")) {
             respond(exchange, StatusCodes.BAD_REQUEST, new space.pxls.server.packets.http.Error("bad_username", "Username contains invalid characters"));
             return;
         } else if (!App.getUserManager().isValidSignupToken(token)) {
@@ -1632,8 +1632,8 @@ public class WebHandler {
 
         String id = exchange.getRelativePath().substring(1);
 
-        AuthService service = services.get(id);
-        if (service != null && service.use()) {
+//        AuthService service = services.get(id);
+//        if (service != null && service.use()) {
 
             // Verify the given OAuth state, to make sure people don't double-send requests
             Deque<String> stateQ = exchange.getQueryParameters().get("state");
@@ -1680,10 +1680,10 @@ public class WebHandler {
                 return;
             }
 
-            if (!service.verifyState(state)) {
-                respond(exchange, StatusCodes.BAD_REQUEST, new space.pxls.server.packets.http.Error("bad_state", "Invalid state token"));
-                return;
-            }
+//            if (!service.verifyState(state)) {
+//                respond(exchange, StatusCodes.BAD_REQUEST, new space.pxls.server.packets.http.Error("bad_state", "Invalid state token"));
+//                return;
+//            }
 
 
             String accountId = exchange.getQueryParameters().get("account_id").peekFirst();
@@ -1721,25 +1721,56 @@ public class WebHandler {
 //                return;
 //            }
 
-            User user = App.getUserManager().getByLogin(id, accountId);
-            String ip = exchange.getAttachment(IPReader.IP);
-            if (user == null) {
-                String signUpToken = App.getUserManager().generateUserCreationToken(new UserLogin(id, accountId));
-                user = App.getUserManager().signUp(accountId, signUpToken, ip);
-                if (user == null) {
-                    respond(exchange, StatusCodes.BAD_REQUEST, new space.pxls.server.packets.http.Error("bad_username", "Username taken, try another?"));
-                }
+        User user = App.getUserManager().getByLogin(id, accountId);
+        // If there is no user with that identifier, we make a signup token and tell the client to sign up with that token
+        if (user == null) {
+            String signUpToken = App.getUserManager().generateUserCreationToken(new UserLogin(id, accountId));
+            if (redirect) {
+                redirect(exchange, propagateNearParameters(exchange, signUpToken, true));
+            } else {
+                respond(exchange, StatusCodes.OK, new AuthResponse(signUpToken, true));
             }
+        } else {
             // We need the IP for logging/db purposes
+            String ip = exchange.getAttachment(IPReader.IP);
             String loginToken = App.getUserManager().logIn(user, ip);
             setAuthCookie(exchange, loginToken, 24);
-            redirect(exchange, "/?" + exchange.getQueryString());
-        } else {
-            respond(exchange, StatusCodes.BAD_REQUEST, new Error("bad_service", "No auth service named " + id));
+            if (redirect) {
+                redirect(exchange, propagateNearParameters(exchange, loginToken, false));
+            } else {
+                respond(exchange, StatusCodes.OK, new AuthResponse(loginToken, false));
+            }
         }
+//            User user = App.getUserManager().getByLogin(id, accountId);
+//            String ip = exchange.getAttachment(IPReader.IP);
+//            if (user == null) {
+//                String signUpToken = App.getUserManager().generateUserCreationToken(new UserLogin(id, accountId));
+//                user = App.getUserManager().signUp(accountId, signUpToken, ip);
+//                if (user == null) {
+//                    respond(exchange, StatusCodes.BAD_REQUEST, new space.pxls.server.packets.http.Error("bad_username", "Username taken, try another?"));
+//                }
+//            }
+//            // We need the IP for logging/db purposes
+//            String loginToken = App.getUserManager().logIn(user, ip);
+//            setAuthCookie(exchange, loginToken, 24);
+//            redirect(exchange, "/?" + exchange.getQueryString());
+//        } else {
+//            respond(exchange, StatusCodes.BAD_REQUEST, new Error("bad_service", "No auth service named " + id));
+//        }
     }
 
-    private String extractOAuthCode(HttpServerExchange exchange) {
+    private String propagateNearParameters(HttpServerExchange exchange, String token, Boolean signup) {
+        return String.format(
+            "/auth_done.html?token=%s&signup=%s&account_id=%s&public_key=%s&all_keys=%s",
+            encodedURIComponent(token), signup,
+            exchange.getQueryParameters().get("account_id").getFirst(),
+            exchange.getQueryParameters().get("public_key").getFirst(),
+            exchange.getQueryParameters().get("all_keys").getFirst()
+            );
+    }
+
+
+        private String extractOAuthCode(HttpServerExchange exchange) {
         // Most implementations just add a "code" parameter
         Deque<String> code = exchange.getQueryParameters().get("code");
         if (code != null && !code.isEmpty()) return code.element();

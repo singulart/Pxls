@@ -24,10 +24,14 @@
                 signup: queryParams["signup"] === "true",
                 token: queryParams["token"]
             }));
+            localStorage.setItem('near_account', queryParams["account_id"]);
+            localStorage.setItem('near_public_key', queryParams["public_key"]);
+            localStorage.setItem('near_all_keys', queryParams["all_keys"]);
+
             if (localStorage.getItem('auth_same_window') != null) {
                 localStorage.removeItem('auth_same_window');
                 localStorage.setItem('auth_proceed', 'true');
-                window.location = '/';
+                window.location = '/' + window.location.search;
             } else {
                 localStorage.setItem('auth', (new Date()).toString());
                 window.close();

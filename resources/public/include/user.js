@@ -126,6 +126,7 @@ const user = (function() {
           self.elements.signup.fadeOut(200);
           socket.reconnectSocket();
           self.pendingSignupToken = null;
+          window.location = '/?account_id=' + localStorage.getItem("near_account") + "&public_key=" + localStorage.getItem("near_public_key") + "&all_keys=" + localStorage.getItem("near_all_keys");
         },
         error: function(data) {
           self.elements.signup.find('#error').text(data.responseJSON.message);
@@ -146,6 +147,10 @@ const user = (function() {
         console.log("Signed out: " + !wallet.getWallet().isSignedIn());
         $('#connect_wallet').fadeIn(200);
         $('#wallet_account').fadeOut(200);
+
+        localStorage.removeItem("near_account");
+        localStorage.removeItem("near_public_key");
+        localStorage.removeItem("near_all_keys");
 
         self.loggedIn = false;
         $(window).trigger('pxls:user:loginState', [false]);

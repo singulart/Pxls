@@ -1,5 +1,6 @@
 const nearAPI = require('near-api-js');
 const { socket } = require('./socket');
+const { ls } = require('./storage');
 
 // TODO fixme
 // TODO fix process.env ??
@@ -18,6 +19,8 @@ module.exports.wallet = (function() {
     },
 
     init() {
+      // experimental, to check if auth_done.html redirects to "/"
+      ls.set('auth_same_window', true);
 
       self.elems.connectWalletButton = document.querySelector('#connect_wallet');
 
@@ -44,6 +47,8 @@ module.exports.wallet = (function() {
         } else {
           $('#connect_wallet').fadeIn(200);
           $('#wallet_account').fadeOut(200);
+          $('#signup-username-input').val(localStorage.getItem('near_account'));
+          console.log(localStorage.getItem('near_account'));
         }
 
 
@@ -70,7 +75,7 @@ module.exports.wallet = (function() {
         self.walletConnection.requestSignIn({
           contractId: CONTRACT_NAME, // optional, contract requesting access
           methodNames: ['put_pixel'], // optional
-          successUrl: 'http://localhost:4567/auth/near?json=1', // optional
+          successUrl: 'http://localhost:4567/auth/near?json=1&state=|redirect', // optional
           failureUrl: 'http://localhost:4567/auth/near-failed?json=1' // optional
         });
       });
