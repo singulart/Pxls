@@ -685,7 +685,10 @@ public class WebHandler {
 
         Calendar futureCalendar = Calendar.getInstance();
         futureCalendar.add(Calendar.DATE, days);
-        String hostname = App.getConfig().getString("host");
+        String hostname = System.getProperty("hostname");
+        if (hostname == null) {
+            throw new IllegalStateException("No hostname system property found!!!");
+        }
         exchange.setResponseCookie(
             new CookieImpl(PXLS_TOKEN, loginToken)
                 .setHttpOnly(true)

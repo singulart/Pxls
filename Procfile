@@ -1,1 +1,1 @@
-web: java -jar -Ddatabase.url=$HEROKU_DB_URL -Ddatabase.user=$HEROKU_DB_USER -Ddatabase.pass=$HEROKU_DB_PASS -Dhostname=$HEROKU_HOSTNAME target/pxls-1.0-SNAPSHOT.jar
+web: java -jar -Ddatabase.url=$HEROKU_DB_URL -Ddatabase.user=$HEROKU_DB_USER -Ddatabase.pass=$HEROKU_DB_PASS -Dhostname=$HEROKU_HOSTNAME -Dserver.port=$PORT target/pxls-1.0-SNAPSHOT.jar
