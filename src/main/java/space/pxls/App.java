@@ -159,7 +159,7 @@ public class App {
             saveMapForce();
         }));
 
-        server = new UndertowServer(config.getInt("server.port"));
+        server = new UndertowServer(Integer.parseInt(System.getProperty("server.port")));
         server.start();
 
         new Timer().schedule(new TimerTask() {
