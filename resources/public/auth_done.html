@@ -31,7 +31,7 @@
             if (localStorage.getItem('auth_same_window') != null) {
                 localStorage.removeItem('auth_same_window');
                 localStorage.setItem('auth_proceed', 'true');
-                window.location = '/' + window.location.search;
+                window.location = window.location.origin + window.location.search;
             } else {
                 localStorage.setItem('auth', (new Date()).toString());
                 window.close();

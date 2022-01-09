@@ -201,6 +201,10 @@ const user = (function() {
         self.elements.users.text(data.count + ' online').fadeIn(200);
       });
       socket.on('userinfo', function(data) {
+
+        $('#connect_wallet').fadeOut(200);
+        $('#wallet_account').text(data.username);
+
         let isBanned = false;
         const banelem = crel('div', { class: 'ban-alert-content' });
         self.username = data.username;

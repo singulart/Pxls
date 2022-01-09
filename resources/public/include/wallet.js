@@ -41,15 +41,12 @@ module.exports.wallet = (function() {
           console.log(walletConnection.isSignedIn());
           self.walletConnection = walletConnection;
 
-          if(self.walletConnection.isSignedIn()) {
-            $('#connect_wallet').fadeOut(200);
-            $('#wallet_account').text(self.walletConnection.getAccountId());
-          } else {
+          if(!self.walletConnection.isSignedIn()) {
             $('#connect_wallet').fadeIn(200);
             $('#wallet_account').fadeOut(200);
-            $('#signup-username-input').val(localStorage.getItem('near_account'));
             console.log(localStorage.getItem('near_account'));
           }
+          $('#signup-username-input').val(localStorage.getItem('near_account'));
 
 
           self.contract = new nearAPI.Contract(
