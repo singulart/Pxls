@@ -186,6 +186,10 @@ public class UndertowServer {
             socketHandler.disconnect(user);
         });
         channel.resumeReceives();
+
+
+        // send to front-end
+        send(channel, new NearConfig());
     }
 
     public Set<PxlsWebSocketConnection> getConnections() {

@@ -47,9 +47,9 @@ module.exports.query = (function() {
         Object.keys(self.params).filter(x => !varKeys.includes(x)).forEach(value => self.remove(value));
       }
 
-      if (window.location.search.substring(1)) {
-        window.location = window.location.pathname + '#' + self.getStr();
-      }
+      // if (window.location.search.substring(1)) {
+      //   window.location = window.location.pathname + '#' + self.getStr();
+      // }
     },
     setIfDifferent: function() {
       // setIfDifferent({oo: 0.3, template: "https://i.trg0d.com/gpq0786uCk4"}, [silent=false]);

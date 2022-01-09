@@ -114,12 +114,12 @@ function srcJS () {
         .pipe(buffer())
         .pipe(translate(file.path))
         .pipe(gulpIf(isDevEnvironment, sourcemaps.init({ loadMaps: true })))
-        .pipe(minify({
-          ext: {
-            src: '.src.js',
-            min: '.js'
-          }
-        }))
+        // .pipe(minify({
+        //   ext: {
+        //     src: '.src.js',
+        //     min: '.js'
+        //   }
+        // }))
         .pipe(gulpIf(isDevEnvironment, sourcemaps.write()))
         .pipe(rename({ suffix: langcode }))
         .pipe(dest('target/classes/public'))

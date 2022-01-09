@@ -43,6 +43,7 @@ import space.pxls.server.UndertowServer;
 import space.pxls.server.packets.chat.Badge;
 import space.pxls.server.packets.chat.ClientChatMessage;
 import space.pxls.server.packets.socket.ClientUndo;
+import space.pxls.server.packets.socket.NearConfig;
 import space.pxls.server.packets.socket.ServerAlert;
 import space.pxls.server.packets.socket.ServerNotification;
 import space.pxls.server.packets.socket.ServerPlace;
@@ -159,7 +160,7 @@ public class App {
             saveMapForce();
         }));
 
-        server = new UndertowServer(Integer.parseInt(System.getProperty("server.port")));
+        server = new UndertowServer(Integer.parseInt(System.getProperty("server.port", "4567")));
         server.start();
 
         new Timer().schedule(new TimerTask() {
