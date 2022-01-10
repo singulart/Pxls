@@ -128,6 +128,7 @@ public class UndertowServer {
 
         PxlsWebSocketConnection con = new PxlsWebSocketConnection(channel, user);
         connections.add(con);
+        System.err.println(connections.size());
 
         if (user != null) {
             user.getConnections().add(channel);

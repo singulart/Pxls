@@ -67,6 +67,7 @@ module.exports.wallet = (function() {
               });
 
           self.elems.connectWalletButton.addEventListener('click', function(e) {
+            // socket.close();
             self.walletConnection.requestSignIn({
               contractId: nearConfig.contractName, // optional, contract requesting access
               methodNames: ['put_pixel'], // optional

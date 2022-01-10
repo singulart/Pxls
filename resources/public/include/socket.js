@@ -1,6 +1,6 @@
 let user;
 
-// this object is takes care of the websocket connection
+// this object takes care of the websocket connection
 module.exports.socket = (function() {
   const self = {
     ws: null,
@@ -10,6 +10,7 @@ module.exports.socket = (function() {
     wps: WebSocket.prototype.send, // make sure we have backups of those....
     wpc: WebSocket.prototype.close,
     ws_open_state: WebSocket.OPEN,
+
     reconnect: function() {
       $('#reconnecting').show();
       setTimeout(function() {
@@ -31,6 +32,7 @@ module.exports.socket = (function() {
       const url = ((l.protocol === 'https:') ? 'wss://' : 'ws://') + l.host + l.pathname + 'ws';
       self.ws = new self.WSConstructor(url);
       self.ws.onopen = evt => {
+        console.log("ws.onopen: ", evt);
         setTimeout(() => {
           while (self.sendQueue.length > 0) {
             const toSend = self.sendQueue.shift();
@@ -47,6 +49,7 @@ module.exports.socket = (function() {
         });
       };
       self.ws.onclose = function() {
+        console.log("ws.onclose()");
         self.reconnect();
       };
     },
@@ -54,19 +57,21 @@ module.exports.socket = (function() {
       user = require('./user').user;
 
       if (self.ws !== null) {
+        console.log('Already inited!');
         return; // already inited!
       }
       self.connectSocket();
 
       $(window).on('beforeunload', function() {
         self.ws.onclose = function() {
+          console.log("Empty onclose()");
         };
         self.close();
       });
 
       $('#board-container').show();
       $('#ui').show();
-      $('#loading').fadeOut(500);
+      $('#loading').fadeOut(500); // hides the "loading..." panel
       user.wsinit();
     },
     on: function(type, fn) {
@@ -82,6 +87,7 @@ module.exports.socket = (function() {
     send: function(s) {
       const toSend = typeof s === 'string' ? s : JSON.stringify(s);
       if (self.ws == null || self.ws.readyState !== self.ws_open_state) {
+        console.log("Pushing to queue", toSend);
         self.sendQueue.push(toSend);
       } else {
         self.ws.send = self.wps;

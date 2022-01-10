@@ -59,8 +59,6 @@ const user = (function() {
       if (data.signup) {
         self.pendingSignupToken = data.token;
         self.elements.signup.fadeIn(200);
-      } else {
-        socket.reconnectSocket();
       }
       self.elements.prompt.fadeOut(200);
     },
@@ -154,7 +152,7 @@ const user = (function() {
 
         self.loggedIn = false;
         $(window).trigger('pxls:user:loginState', [false]);
-        socket.reconnectSocket();
+        // socket.reconnectSocket();
       });
     },
     init: function(instaban) {
