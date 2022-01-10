@@ -22,13 +22,11 @@ public class IPReader implements HttpHandler {
     public void handleRequest(HttpServerExchange exchange) throws Exception {
         String addr = exchange.getSourceAddress().getAddress().getHostAddress();
 
-        List<String> locals = App.getConfig().getStringList("server.proxy.localhosts");
         for (String headerName : App.getConfig().getStringList("server.proxy.headers")) {
-            if (locals.contains(addr)) {
-                HeaderValues header = exchange.getRequestHeaders().get(headerName);
-                if (header != null && !header.isEmpty()) {
-                    addr = header.element();
-                }
+            HeaderValues header = exchange.getRequestHeaders().get(headerName);
+            if (header != null && !header.isEmpty()) {
+                String[] split = header.element().split(",");
+                addr = split[split.length - 1];
             }
         }
 
