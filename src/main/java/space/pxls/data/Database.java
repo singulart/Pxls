@@ -4,7 +4,9 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.statement.StatementContext;
 import space.pxls.App;
+import space.pxls.BoardType;
 import space.pxls.server.packets.chat.Badge;
 import space.pxls.server.packets.chat.ChatMessage;
 import space.pxls.server.packets.chat.ServerChatLookup;
@@ -250,6 +252,13 @@ public class Database {
                 "CREATE INDEX IF NOT EXISTS _faction_ban_uuid ON faction_ban(uid);" +
                 "CREATE UNIQUE INDEX IF NOT EXISTS _faction_ban_uid_fid_pair ON faction_ban(uid, fid);")
                 .execute();
+
+            // board data
+            handle.createUpdate("CREATE TABLE IF NOT EXISTS board_state (" +
+                    "id SERIAL NOT NULL PRIMARY KEY," +
+                    "board_type VARCHAR(16) NOT NULL," +
+                    "board BYTEA);")
+                .execute();
         });
     }
 
@@ -295,6 +304,30 @@ public class Database {
                 .bind("seconds", seconds)
                 .bind("id", id)
                 .execute());
+    }
+
+    /**
+     * Saves the map data to DB (instead of filesystem).
+     * @param board byte array of board data
+     * @param boardType type of board (regular, virgin, heatmap)
+     */
+    public void saveBoard(BoardType boardType, byte[] board) {
+        jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO board_state (board_type, board) VALUES (:type, :bin);")
+                .bind("type", boardType.name())
+                .bind("bin", board)
+            .execute());
+    }
+
+    /**
+     * Loads board data from the DB using 'type' discriminator.
+     * @param boardType type of board (regular, virgin, heatmap)
+     * @return The byte array with board data, or empty Optional.
+     */
+    public Optional<byte[]> getBoard(BoardType boardType) {
+        return jdbi.withHandle(handle -> handle.select("SELECT bd.board FROM board_state bd WHERE bd.board_type = :type ORDER BY bd.id DESC LIMIT 1")
+                .bind("type", boardType.name())
+                .map((ResultSet r, StatementContext ctx) -> r.getBytes(1))
+                .findFirst());
     }
 
     /**

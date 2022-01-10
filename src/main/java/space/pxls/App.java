@@ -8,8 +8,6 @@ import com.typesafe.config.ConfigList;
 import com.typesafe.config.ConfigValue;
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -43,7 +41,6 @@ import space.pxls.server.UndertowServer;
 import space.pxls.server.packets.chat.Badge;
 import space.pxls.server.packets.chat.ClientChatMessage;
 import space.pxls.server.packets.socket.ClientUndo;
-import space.pxls.server.packets.socket.NearConfig;
 import space.pxls.server.packets.socket.ServerAlert;
 import space.pxls.server.packets.socket.ServerNotification;
 import space.pxls.server.packets.socket.ServerPlace;
@@ -124,6 +121,8 @@ public class App {
         placemap = new byte[width * height];
         virginmap = new byte[width * height];
         defaultBoard = null;
+        
+        database = new Database();
 
         initStorage();
         loadDefaultMap();
@@ -132,7 +131,6 @@ public class App {
         havePlacemap = loadPlacemap();
         loadVirginmap();
 
-        database = new Database();
         userManager = new UserManager();
 
         loadRoles();
@@ -156,7 +154,6 @@ public class App {
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             getLogger().info("Saving map before shutdown...");
-            saveMapBackup();
             saveMapForce();
         }));
 
@@ -929,7 +926,6 @@ public class App {
     private static void handleSave() {
         try {
             saveMapForce();
-            saveMapBackup();
             getLogger().info("Success!");
         } catch (Exception x) {
             x.printStackTrace();
@@ -1287,41 +1283,39 @@ public class App {
     }
 
     private static void loadMap() {
-        Path path = getStorageDir().resolve("board.dat");
-        if (!Files.exists(path)) {
-            getLogger().warn("Cannot find board.dat in working directory, using blank board");
-            for (int x = 0; x < width; x++) {
-                for (int y = 0; y < height; y++) {
-                    board[x + width * y] = getDefaultColor(x, y);
-                }
-            }
-            saveMapToDir(path);
-        }
-
         try {
-            byte[] bytes = Files.readAllBytes(path);
-            System.arraycopy(bytes, 0, board, 0, width * height);
+            Optional<byte[]> bytes = database.getBoard(BoardType.BOARD);
+            if(bytes.isPresent()) {
+                System.arraycopy(bytes.get(), 0, board, 0, width * height);
+            } else {
+                getLogger().warn("Cannot find board in database, using blank board");
+
+                for (int x = 0; x < width; x++) {
+                    for (int y = 0; y < height; y++) {
+                        board[x + width * y] = getDefaultColor(x, y);
+                    }
+                }
+                saveMapToDB();
+            }
         } catch (ArrayIndexOutOfBoundsException e) {
-            getLogger().error("board.dat dimensions don't match the ones on pxls.conf");
-        } catch (IOException e) {
-            e.printStackTrace();
+            getLogger().error("board dimensions don't match the ones on pxls.conf");
         }
     }
 
     private static void loadHeatmap() {
-        Path path = getStorageDir().resolve("heatmap.dat");
-        if (!Files.exists(path)) {
-            getLogger().warn("Cannot find heatmap.dat in working directory, using heatmap");
-            saveHeatmapToDir(path);
-        }
-
         try {
-            byte[] bytes = Files.readAllBytes(path);
-            System.arraycopy(bytes, 0, heatmap, 0, width * height);
+            Optional<byte[]> bytes  = database.getBoard(BoardType.HEAT);
+
+            if(bytes.isPresent()) {
+                System.arraycopy(bytes.get(), 0, heatmap, 0, width * height);
+            } else {
+                getLogger().warn("Cannot find heatmap in database, using heatmap");
+
+                saveHeatmapToDB();
+            }
+
         } catch (ArrayIndexOutOfBoundsException e) {
-            getLogger().error("heatmap.dat dimensions don't match the ones on pxls.conf");
-        } catch (IOException e) {
-            e.printStackTrace();
+            getLogger().error("heatmap dimensions don't match the ones on pxls.conf");
         }
     }
 
@@ -1345,25 +1339,22 @@ public class App {
     }
 
     private static void loadVirginmap() {
-        Path path = getStorageDir().resolve("virginmap.dat");
-        if (!Files.exists(path)) {
-            getLogger().warn("Cannot find virginmap.dat in working directory, using blank virginmap");
-
-            for (int x = 0; x < width; x++) {
-                for (int y = 0; y < height; y++) {
-                    virginmap[x + width * y] = (byte) 0xFF;
-                }
-            }
-            saveVirginmapToDir(path);
-        }
-
         try {
-            byte[] bytes = Files.readAllBytes(path);
-            System.arraycopy(bytes, 0, virginmap, 0, width * height);
+            Optional<byte[]> bytes = database.getBoard(BoardType.VIRGIN);
+            if(bytes.isPresent()) {
+                System.arraycopy(bytes.get(), 0, virginmap, 0, width * height);
+            } else {
+                getLogger().warn("Cannot find virginmap in database, using blank virginmap");
+
+                for (int x = 0; x < width; x++) {
+                    for (int y = 0; y < height; y++) {
+                        virginmap[x + width * y] = (byte) 0xFF;
+                    }
+                }
+                saveVirginmapToDB();
+            }
         } catch (ArrayIndexOutOfBoundsException e) {
-            getLogger().error("virginmap.dat dimensions don't match the ones on pxls.conf");
-        } catch (IOException e) {
-            e.printStackTrace();
+            getLogger().error("virginmap dimensions don't match the ones on pxls.conf");
         }
     }
 
@@ -1403,41 +1394,24 @@ public class App {
 
     public static void saveMap() {
         mapSaveTimer.run(App::saveMapForce);
-        mapBackupTimer.run(App::saveMapBackup);
     }
 
     private static void saveMapForce() {
-        saveMapToDir(getStorageDir().resolve("board.dat"));
-        saveHeatmapToDir(getStorageDir().resolve("heatmap.dat"));
-        saveVirginmapToDir(getStorageDir().resolve("virginmap.dat"));
+        saveMapToDB();
+        saveHeatmapToDB();
+        saveVirginmapToDB();
     }
 
-    private static void saveMapBackup() {
-        saveMapToDir(getStorageDir().resolve("backups/board." + System.currentTimeMillis() + ".dat"));
+    private static void saveMapToDB() {
+        database.saveBoard(BoardType.BOARD, board);
     }
 
-    private static void saveMapToDir(Path path) {
-        try {
-            Files.write(path, board);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private static void saveHeatmapToDB() {
+        database.saveBoard(BoardType.HEAT, heatmap);
     }
 
-    private static void saveHeatmapToDir(Path path) {
-        try {
-            Files.write(path, heatmap);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void saveVirginmapToDir(Path path) {
-        try {
-            Files.write(path, virginmap);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private static void saveVirginmapToDB() {
+        database.saveBoard(BoardType.VIRGIN, virginmap);
     }
 
     public static boolean shouldIncreaseSomePixelCount() {
