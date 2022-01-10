@@ -92,7 +92,7 @@ public class PacketHandler {
             user.tickStack(false); // pop the whole pixel stack
             sendAvailablePixels(channel, user, "connect");
         }
-        numAllCons++;
+        numAllCons++; // no logic around this property
 
         updateUserData();
     }
