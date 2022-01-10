@@ -5,7 +5,7 @@
         <meta name="viewport"
               content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Pxls</title>
+        <title>NEAR Canvas</title>
         <script src="/jquery-3.4.1.min.js"></script>
         <script src="/profile/js/bootstrap.bundle.min.js"></script>
         <link rel="stylesheet" href="/profile/css/theme-purple.min.css">
@@ -15,7 +15,7 @@
         <nav class="navbar navbar-dark navbar-expand-md" role="nav">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a href="/" class="nav-link">Pxls</a>
+                    <a href="/" class="nav-link">NEAR Canvas</a>
                 </li>
             </ul>
             {% if requesting_user is not null %}
@@ -41,16 +41,16 @@
                 <p>{{i18n('Localization', 'The content you requested could not be found at this URL. If you believe this is an error, please contact a developer.')}}</p>
                 <div class="d-block">
                     {# links to the homepage (the app itself) #}
-                    <a href="/" class="btn btn-primary mr-1"><i class="fas fa-arrow-left"></i> {{i18n('Localization', 'Back to Pxls')}}</a>
+                    <a href="/" class="btn btn-primary mr-1"><i class="fas fa-arrow-left"></i> {{i18n('Localization', 'Back to NEAR Canvas')}}</a>
                     <a href="/profile" class="btn btn-primary mr-1"><i class="fas fa-user"></i> {{i18n('Localization', 'My Profile')}}</a>
                 </div>
                 {% elseif err == 403 %}
                 {# HTTP status code name #}
                 <h1>{{i18n('Localization', 'Not Authenticated')}}</h1>
                 <hr>
-                <p>{{i18n('Localization', 'You must be logged in to access this data. Please go back to pxls and go through the authentication process.')}}</p>
+                <p>{{i18n('Localization', 'You must be logged in to access this data. Please go back and go through the authentication process.')}}</p>
                 <div class="d-block">
-                    <a href="/" class="btn btn-primary mr-1"><i class="fas fa-arrow-left"></i> {{i18n('Localization', 'Back to Pxls')}}</a>
+                    <a href="/" class="btn btn-primary mr-1"><i class="fas fa-arrow-left"></i> {{i18n('Localization', 'Back')}}</a>
                 </div>
                 {% else %}
                 {# HTTP status code name #}
@@ -58,7 +58,7 @@
                 <hr>
                 <p>{{i18n('Localization', 'The action you attempted to perform is not allowed or resulted in an error. Please ensure you have access to the endpoint and try again later.')}}</p>
                 <div class="d-block">
-                    <a href="/" class="btn btn-primary mr-1"><i class="fas fa-arrow-left"></i> {{i18n('Localization', 'Back to Pxls')}}</a>
+                    <a href="/" class="btn btn-primary mr-1"><i class="fas fa-arrow-left"></i> {{i18n('Localization', 'Back')}}</a>
                     <a href="/profile" class="btn btn-primary mr-1"><i class="fas fa-user"></i> {{i18n('Localization', 'My Profile')}}</a>
                 </div>
                 {% endif %}

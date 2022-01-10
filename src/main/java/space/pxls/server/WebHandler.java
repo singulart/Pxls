@@ -1589,7 +1589,7 @@ public class WebHandler {
         } else if (name.isEmpty()) {
             respond(exchange, StatusCodes.BAD_REQUEST, new space.pxls.server.packets.http.Error("bad_username", "Username may not be empty"));
             return;
-        } else if (!name.matches("[a-zA-Z0-9\\.\\-]+")) {
+        } else if (!name.matches("[a-zA-Z0-9\\.\\-\\_]+")) {
             respond(exchange, StatusCodes.BAD_REQUEST, new space.pxls.server.packets.http.Error("bad_username", "Username contains invalid characters"));
             return;
         } else if (!App.getUserManager().isValidSignupToken(token)) {

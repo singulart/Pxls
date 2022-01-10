@@ -1138,16 +1138,16 @@ msgid "Check the info panel (the icon on the top left) for more details and link
 msgstr "Check the info panel (the icon on the top left) for more details and links, or join our <a href=\"https://pxls.space/discord\" target=\"_blank\">Discord server</a>, where a staff member will gladly respond."
 
 #: resources/public/pebble_templates/info.html
-msgid "Welcome!"
+msgid "welcome_00"
 msgstr "Welcome!"
 
 #: resources/public/pebble_templates/info.html
-msgid "Welcome to pxls.space! Pxls is a multiplayer online collaborative canvas that allows you to create anything you can imagine, one pixel at a time. Join hundreds of other players in the Pxls community and create amazing works of art together as a team, or solo."
-msgstr "Welcome to pxls.space! Pxls is a multiplayer online collaborative canvas that allows you to create anything you can imagine, one pixel at a time. Join hundreds of other players in the Pxls community and create amazing works of art together as a team, or solo."
+msgid "welcome_01"
+msgstr "Welcome to NEAR Canvas! NEAR Canvas is a multiplayer online collaborative drawing tool that allows you to create anything you can imagine, one pixel at a time. Join hundreds of other players in the NEAR Canvas community and create amazing works of art together as a team, or solo."
 
 #: resources/public/pebble_templates/info.html
-msgid "The best place to reach staff and fellow community is in the discord!"
-msgstr "The best place to reach staff and fellow community is in the discord!"
+msgid "welcome_02"
+msgstr "The best place to reach staff and fellow community is on Discord!"
 
 #: resources/public/pebble_templates/info.html
 msgid "Check out our social media pages, and please take the time to read the rules below. Have fun creating (or changing) art!"

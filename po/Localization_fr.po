@@ -1138,15 +1138,15 @@ msgid "Check the info panel (the icon on the top left) for more details and link
 msgstr "Regarde l'onglet d'information (l'icône dans le coin en haut à gauche) pour plus de détails et des liens, ou rejoignez notre <a href=\"https://pxls.space/discord\" target=\"_blank\">Discord server</a>, où un membre du staff te répondra avec plaisir."
 
 #: resources/public/pebble_templates/info.html
-msgid "Welcome!"
+msgid "welcome_00"
 msgstr "Bienvenue !"
 
 #: resources/public/pebble_templates/info.html
-msgid "Welcome to pxls.space! Pxls is a multiplayer online collaborative canvas that allows you to create anything you can imagine, one pixel at a time. Join hundreds of other players in the Pxls community and create amazing works of art together as a team, or solo."
+msgid "welcome_01"
 msgstr "Bienvenue sur pxls.space ! Pxls est un canvas collaboratif en ligne qui te permet de créer tout ce que tu peux imaginer, pixel après pixel. Rejoins des centaines de joueurs dans la communauté de Pxls et crée des œuvres d'art en équipe ou en solo."
 
 #: resources/public/pebble_templates/info.html
-msgid "The best place to reach staff and fellow community is in the discord!"
+msgid "welcome_02"
 msgstr "Le meilleur endroit pour contacter le staff ou d'autres membres de la communauté est le serveur Discord !"
 
 #: resources/public/pebble_templates/info.html

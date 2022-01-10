@@ -21,7 +21,6 @@ impl BorshSerialize for BoardArray {
     #[inline]
     fn serialize<W: Write>(&self, writer: &mut W) -> Result<()> {
         let written: Result<usize> =  writer.write(&self.0);
-        env::log(written.unwrap().to_string().as_bytes());
         Ok(())
     }
 }
