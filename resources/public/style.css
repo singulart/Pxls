@@ -258,6 +258,9 @@ img.emoji.emoji--custom {
   padding-right: 1em;
   font-size: 110%;
 }
+div.right {
+    display: flex;
+}
 
 label.extra-label {
     display: block;
